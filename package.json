@@ -1,0 +1,30 @@
+{
+  "name": "simon-game",
+  "version": "1.0.0",
+  "description": "this is the improved version of Simon game using JavaScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc index.ts",
+    "start": "tsc index.ts --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alguerocode/simon-game.git"
+  },
+  "keywords": [
+    "javascript",
+    "game",
+    "website",
+    "typescript"
+  ],
+  "author": "salah alhashmi",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/alguerocode/simon-game/issues"
+  },
+  "homepage": "https://github.com/alguerocode/simon-game#readme",
+  "dependencies": {
+    "typescript": "^4.7.4"
+  }
+}
