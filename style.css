@@ -1,22 +1,75 @@
 @import url("https://fonts.googleapis.com/css2?family=Inconsolata:wght@500&family=Roboto:wght@300&display=swap");
 
-.steps {
-  display: flex;
-}
-
 * {
   font-family: "Inconsolata", monospace;
 }
 
+.steps {
+  display: flex;
+}
+
+#start-game {
+  display: block;
+  position: relative;
+  width: 180px;
+  background-color: black;
+  height: 40px;
+  border-radius: 10px;
+  margin: 50px;
+  filter: brightness(0.8);
+  background-image: linear-gradient(top to, black, black);
+  cursor: pointer;
+}
+
+#start-game label {
+  content: "";
+  background-color: white;
+  border: 3px solid black;
+  background-repeat: no-repeat;
+  background-size: 5rem 5rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 175px;
+  font-size: 2rem;
+  height: inherit;
+  border-radius: inherit;
+  transform: translateY(-15px);
+  transition-duration: 125ms;
+  transition-delay: 125ms;
+  transition-delay: initial;
+  cursor: pointer;
+}
+
+#start-game:active label {
+  transform: translateY(-5px);
+  transition-duration: 125ms;
+  transition-delay: initial;
+}
+
 body {
-  background-color: #44444c;
-  color: #fff;
+  background-color: whitesmoke;
+  color: black;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
 
 #level {
   display: flex;
   flex-direction: row;
+}
+
+#board {
+  display: none;
+}
+
+main {
+  display: none;
+  max-width: 600px;
+  color: #fff;
 }
 
 .buttons-container {
@@ -50,6 +103,7 @@ body {
   top: 0;
   left: 0;
   width: inherit;
+  font-size: 4rem;
   height: inherit;
   border-radius: inherit;
   transform: translateY(-20px);
@@ -87,4 +141,20 @@ body {
   align-items: center;
   align-self: flex-start;
   justify-self: flex-start;
+}
+
+@media screen and (max-width: 600px) {
+  .buttons-container .game-btn .front {
+    background-size: 3rem 3rem;
+    transform: translateY(-15px);
+  }
+
+  .buttons-container .game-btn {
+    width: 60px;
+    height: 45px;
+  }
+
+  .front {
+    font-size: 2rem !important;
+  }
 }

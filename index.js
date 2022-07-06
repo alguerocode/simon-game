@@ -35,13 +35,23 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var _this = this;
 // create start button
+// end page and retry
+// audio
+// wrong animation
+// progress bar
+// party event when next level
+// next and prev
 /****************** global variables ***********/
 // const prevButton: HTMLButtonElement = document.getElementById("prev")!;
 // const nextButton: HTMLButtonElement = document.getElementById("next")!;
 var buttonsContainer = document.querySelector(".buttons-container");
 var levelNumberEl = document.querySelector("#level-number");
 var curTurnEl = document.querySelector(".current-turn");
+var startGameBTN = document.querySelector("#start-game");
+var Board = document.querySelector("#board");
+var gameTable = document.querySelector("main");
 /****************** controller *****************/
 var stepsController = {
     stepsArr: [],
@@ -161,8 +171,9 @@ var Controller = /** @class */ (function () {
                         if (!(stageController.curStageCount >= stageController.allStageCount)) return [3 /*break*/, 2];
                         // if level == 10 ( case win )
                         Game.level++;
-                        if (Game.level >= 10)
+                        if (Game.level >= 11)
                             document.body.innerHTML = "";
+                        Game.saveLevel();
                         levelNumberEl.innerText = "" + Game.level;
                         newButton = Controller.createButtonEl(Game.colors[Game.level], "" + Game.level);
                         buttonsContainer.append(newButton);
@@ -206,7 +217,6 @@ var Controller = /** @class */ (function () {
         button.id = id;
         var frontground = document.createElement("label");
         frontground.style.backgroundColor = color;
-        frontground.style.fontSize = "4rem";
         frontground.id = id;
         frontground.classList.add("front");
         frontground.innerText = color[0].toUpperCase();
@@ -217,6 +227,7 @@ var Controller = /** @class */ (function () {
                 return;
             var id = +event.target.id;
             Controller.gameLogic(id);
+            console.log(stepsController.stepsArr);
         });
         return button;
     };
@@ -225,7 +236,15 @@ var Controller = /** @class */ (function () {
 var Game = /** @class */ (function () {
     function Game() {
     }
-    Game.extractLevel = function () { }; // it will extreact level from local storage
+    Game.saveLevel = function () {
+        window.localStorage.setItem("level", "" + Game.level);
+    };
+    Game.extractLevelAndSet = function () {
+        var level = window.localStorage.getItem("level");
+        if (level) {
+            Game.level = +level;
+        }
+    };
     Game.initializeGame = function () {
         // create all buttons
         stageController.setAllStageCount = Game.level * 2;
@@ -248,11 +267,15 @@ var Game = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        Game.extractLevelAndSet();
                         Game.initializeGame();
                         Controller.generateStep();
                         Game.updateCounters();
-                        return [4 /*yield*/, GameAnimation.computerAutomation()];
+                        return [4 /*yield*/, GameAnimation.wait(1000)];
                     case 1:
+                        _a.sent();
+                        return [4 /*yield*/, GameAnimation.computerAutomation()];
+                    case 2:
                         _a.sent();
                         return [2 /*return*/];
                 }
@@ -261,7 +284,32 @@ var Game = /** @class */ (function () {
     };
     Game.level = 1;
     Game.curTurn = "computer";
-    Game.colors = ["", "red", "blue", "black"];
+    // we add empty at the first becuase the id start from 1 not 0;
+    Game.colors = [
+        "",
+        "red",
+        "blue",
+        "black",
+        "forestgreen",
+        "coral",
+        "yellow",
+        "aqua",
+        "purple",
+        "orange",
+        "mediumslateblue",
+    ];
     return Game;
 }());
-Game.start();
+startGameBTN.addEventListener("click", function () { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        Board.style.display = "block";
+        gameTable.style.display = "block";
+        startGameBTN.style.display = "none";
+        Game.start();
+        return [2 /*return*/];
+    });
+}); });
+// check if the user already play the game
+if (window.localStorage.getItem("level")) {
+    startGameBTN.querySelector("label").innerText = "Continue";
+}

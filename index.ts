@@ -2,6 +2,13 @@
 
 // create start button
 
+// end page and retry
+// audio
+// wrong animation
+// progress bar
+// party event when next level
+// next and prev
+
 /****************** global variables ***********/
 
 // const prevButton: HTMLButtonElement = document.getElementById("prev")!;
@@ -9,6 +16,9 @@
 const buttonsContainer: HTMLDivElement = document.querySelector(".buttons-container")!;
 const levelNumberEl: HTMLParagraphElement = document.querySelector("#level-number")!;
 const curTurnEl: HTMLParagraphElement = document.querySelector(".current-turn")!;
+const startGameBTN: HTMLLabelElement = document.querySelector("#start-game")!;
+const Board: HTMLDivElement = document.querySelector("#board")!;
+const gameTable: HTMLElement = document.querySelector("main")!;
 
 /****************** controller *****************/
 const stepsController: { stepsArr: number[] } | any = {
@@ -99,8 +109,9 @@ class Controller {
         if (stageController.curStageCount >= stageController.allStageCount) {
           // if level == 10 ( case win )
           Game.level++;
-          if (Game.level >= 10) document.body.innerHTML = "";
-
+          if (Game.level >= 11) document.body.innerHTML = "";
+          Game.saveLevel();
+            
           levelNumberEl.innerText = "" + Game.level;
           const newButton = Controller.createButtonEl(Game.colors[Game.level], "" + Game.level);
           buttonsContainer.append(newButton);
@@ -137,10 +148,9 @@ class Controller {
     button.style.backgroundColor = color;
     button.style.backgroundImage = `linear-gradient(to top, ${color}, rgb(130, 130, 130))`;
     button.id = id;
-    
+
     const frontground = document.createElement("label");
     frontground.style.backgroundColor = color;
-    frontground.style.fontSize = "4rem";
     frontground.id = id;
     frontground.classList.add("front");
     frontground.innerText = color[0].toUpperCase();
@@ -151,6 +161,7 @@ class Controller {
       if (Game.curTurn == "computer") return;
       const id = +event.target.id;
       Controller.gameLogic(id);
+      console.log(stepsController.stepsArr);
     });
 
     return button;
@@ -160,15 +171,37 @@ class Controller {
 class Game {
   static level: number = 1;
   static curTurn: "computer" | "player" = "computer";
-  static colors: string[] = ["", "red", "blue", "black"];
+  // we add empty at the first becuase the id start from 1 not 0;
+  static colors: string[] = [
+    "",
+    "red",
+    "blue",
+    "black",
+    "forestgreen",
+    "coral",
+    "yellow",
+    "aqua",
+    "purple",
+    "orange",
+    "mediumslateblue",
+  ];
 
-  static extractLevel() {} // it will extreact level from local storage
+  static saveLevel() {
+    window.localStorage.setItem("level", "" + Game.level);
+  }
+
+  static extractLevelAndSet() { // it will extract level from local storage
+    const level = window.localStorage.getItem("level");
+    if(level) {
+      Game.level = +level;
+    }
+  } 
   static initializeGame(): void {
     // create all buttons
     stageController.setAllStageCount = Game.level * 2;
     const gameButtons: HTMLLabelElement[] = [];
     for (let i = 1; i <= Game.level; i++) {
-      gameButtons.push(Controller.createButtonEl(Game.colors[i], "" + i ));
+      gameButtons.push(Controller.createButtonEl(Game.colors[i], "" + i));
     }
 
     curTurnEl.innerText = Game.curTurn;
@@ -184,11 +217,23 @@ class Game {
   }
 
   static async start() {
+    Game.extractLevelAndSet();
     Game.initializeGame();
     Controller.generateStep();
     Game.updateCounters();
+    await GameAnimation.wait(1000);
     await GameAnimation.computerAutomation();
   }
 }
 
-Game.start();
+startGameBTN.addEventListener("click", async () => {
+  Board.style.display = "block";
+  gameTable.style.display = "block"; 
+  startGameBTN.style.display = "none";
+  Game.start();
+});
+
+// check if the user already play the game
+if(window.localStorage.getItem("level")) {
+  startGameBTN.querySelector("label")!.innerText = "Continue";
+}
