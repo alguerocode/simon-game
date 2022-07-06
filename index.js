@@ -55,7 +55,6 @@ var stepsCount = 1;
 var curStepsCount = 0;
 var stageCount = 0;
 var curStageCount = 0;
-var playerStep = 0;
 var curTurn = "computer";
 var colors = ["red", "blue", "black"];
 function createButtonEl(color, id) {
@@ -63,6 +62,12 @@ function createButtonEl(color, id) {
     button.classList.add("game-btn");
     button.style.backgroundColor = color;
     button.id = id;
+    button.addEventListener("click", function (event) {
+        if (curTurn == "computer")
+            return;
+        var id = +event.target.id;
+        gameLogic(id);
+    });
     return button;
 }
 function initializeGame() {
@@ -73,17 +78,15 @@ function initializeGame() {
     for (var i = 1; i <= level; i++) {
         gameButtons.push(createButtonEl(colors[i], "" + i));
     }
+    curTurnEl.innerText = curTurn;
     buttonsContainer.append.apply(buttonsContainer, gameButtons);
-    // init counters
+}
+function updateCounters() {
     levelNumberEl.innerText = "" + level;
     curStepsCountEl.innerText = "" + curStepsCount;
     stepsCountEl.innerText = "" + stepsCount;
     curStageCountEl.innerText = "" + curStageCount;
     stageCountEl.innerText = "" + stageCount;
-    curTurnEl.innerText = curTurn;
-    document.querySelectorAll("label").forEach(function (el) {
-        el.addEventListener("click", buttonClickHandler);
-    });
 }
 function wait(time) {
     return new Promise(function (resolve) {
@@ -133,33 +136,28 @@ function changeTurn(turn) {
         : buttonsContainer.classList.add("player-active");
 }
 function wrongClickAnimation() { }
-function buttonClickHandler(event) {
+// game logic
+function gameLogic(id) {
     return __awaiter(this, void 0, void 0, function () {
-        var id, newButton;
+        var newButton;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    if (curTurn == "computer")
-                        return [2 /*return*/];
-                    id = +event.target.id;
-                    if (!(steps[playerStep] === id)) return [3 /*break*/, 7];
-                    playerStep++;
+                    if (!(steps[curStepsCount] === id)) return [3 /*break*/, 5];
                     curStepsCount++;
                     curStepsCountEl.innerText = "" + curStepsCount;
-                    if (!(curStepsCount >= stepsCount)) return [3 /*break*/, 6];
-                    console.log("stage");
+                    if (!(curStepsCount >= stepsCount)) return [3 /*break*/, 4];
                     curStageCount++;
                     curStageCountEl.innerText = "" + curStageCount;
-                    return [4 /*yield*/, wait(500)];
-                case 1:
-                    _a.sent();
-                    if (!(curStageCount >= stageCount)) return [3 /*break*/, 4];
+                    if (!(curStageCount >= stageCount)) return [3 /*break*/, 2];
                     level++;
+                    // if level == 10 ( case win )
+                    if (level >= 10)
+                        document.body.innerHTML = "";
                     levelNumberEl.innerText = "" + level;
                     newButton = createButtonEl(colors[level], "" + level);
                     buttonsContainer.append(newButton);
                     // stages
-                    console.log("level");
                     curStageCount = 0;
                     curStageCountEl.innerText = "" + curStageCount;
                     stageCount = level * 2;
@@ -169,39 +167,46 @@ function buttonClickHandler(event) {
                     curStepsCountEl.innerText = "" + curStepsCount;
                     steps = [];
                     generateStep();
-                    changeTurn("computer");
-                    return [4 /*yield*/, animateSteps(300)];
-                case 2:
+                    return [4 /*yield*/, computerAutomation()];
+                case 1:
                     _a.sent();
-                    changeTurn("player");
                     stepsCount = 1;
                     stepsCountEl.innerText = "" + stepsCount;
-                    return [4 /*yield*/, wait(500)];
+                    return [2 /*return*/, 0];
+                case 2:
+                    generateStep();
+                    return [4 /*yield*/, computerAutomation()];
                 case 3:
                     _a.sent();
-                    return [2 /*return*/, 0];
-                case 4:
-                    console.log("steps");
-                    generateStep();
-                    changeTurn("computer");
-                    return [4 /*yield*/, animateSteps(300)];
-                case 5:
-                    _a.sent();
-                    changeTurn("player");
                     curStepsCount = 0;
                     curStepsCountEl.innerText = "" + curStepsCount;
                     stepsCount = steps.length;
                     stepsCountEl.innerText = "" + stepsCount;
-                    _a.label = 6;
-                case 6: return [3 /*break*/, 9];
-                case 7:
+                    _a.label = 4;
+                case 4: return [3 /*break*/, 7];
+                case 5:
+                    curStepsCount = 0;
+                    curStepsCountEl.innerText = "" + curStepsCount;
+                    return [4 /*yield*/, computerAutomation()];
+                case 6:
+                    _a.sent();
+                    _a.label = 7;
+                case 7: return [2 /*return*/];
+            }
+        });
+    });
+}
+function computerAutomation() {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
                     changeTurn("computer");
                     return [4 /*yield*/, animateSteps(300)];
-                case 8:
+                case 1:
                     _a.sent();
                     changeTurn("player");
-                    _a.label = 9;
-                case 9: return [2 /*return*/];
+                    return [2 /*return*/];
             }
         });
     });
@@ -213,13 +218,17 @@ function Game() {
                 case 0:
                     initializeGame();
                     generateStep();
-                    return [4 /*yield*/, animateSteps(300)];
+                    updateCounters();
+                    return [4 /*yield*/, computerAutomation()];
                 case 1:
                     _a.sent();
-                    changeTurn("player");
                     return [2 /*return*/];
             }
         });
     });
 }
+/* - start game -  */
 Game();
+// class Animation {}
+// class Tools {}
+// class Game {}

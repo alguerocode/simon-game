@@ -23,7 +23,6 @@ let stepsCount = 1;
 let curStepsCount = 0;
 let stageCount = 0;
 let curStageCount = 0;
-let playerStep = 0;
 let curTurn: "computer" | "player" = "computer";
 const colors: string[] = ["red", "blue", "black"];
 
@@ -32,6 +31,11 @@ function createButtonEl(color: string, id: string): HTMLLabelElement {
   button.classList.add("game-btn");
   button.style.backgroundColor = color;
   button.id = id;
+  button.addEventListener("click", (event: any) => {
+    if (curTurn == "computer") return;
+    const id = +event.target.id;
+    gameLogic(id);
+  });
 
   return button;
 }
@@ -45,19 +49,17 @@ function initializeGame(): void {
   for (let i = 1; i <= level; i++) {
     gameButtons.push(createButtonEl(colors[i], "" + i));
   }
-  buttonsContainer.append(...gameButtons);
 
-  // init counters
+  curTurnEl.innerText = curTurn;
+  buttonsContainer.append(...gameButtons);
+}
+
+function updateCounters() {
   levelNumberEl.innerText = "" + level;
   curStepsCountEl.innerText = "" + curStepsCount;
   stepsCountEl.innerText = "" + stepsCount;
   curStageCountEl.innerText = "" + curStageCount;
   stageCountEl.innerText = "" + stageCount;
-  curTurnEl.innerText = curTurn;
-
-  document.querySelectorAll("label").forEach((el) => {
-    el.addEventListener("click", buttonClickHandler);
-  });
 }
 
 function wait(time: number): Promise<null> {
@@ -94,30 +96,26 @@ function changeTurn(turn: typeof curTurn) {
 
 function wrongClickAnimation() {}
 
-async function buttonClickHandler(event: any) {
-  if (curTurn == "computer") return;
-  const id = +event.target.id;
-
-  if (steps[playerStep] === id) {
-    playerStep++;
+// game logic
+async function gameLogic(id: number) {
+  if (steps[curStepsCount] === id) {
     curStepsCount++;
     curStepsCountEl.innerText = "" + curStepsCount;
 
     if (curStepsCount >= stepsCount) {
-      console.log("stage");
-
       curStageCount++;
       curStageCountEl.innerText = "" + curStageCount;
-      await wait(500);
 
       if (curStageCount >= stageCount) {
         level++;
+        // if level == 10 ( case win )
+        if (level >= 10) document.body.innerHTML = "";
+
         levelNumberEl.innerText = "" + level;
         const newButton = createButtonEl(colors[level], "" + level);
         buttonsContainer.append(newButton);
 
         // stages
-        console.log("level");
         curStageCount = 0;
         curStageCountEl.innerText = "" + curStageCount;
 
@@ -129,36 +127,42 @@ async function buttonClickHandler(event: any) {
 
         steps = [];
         generateStep();
-        changeTurn("computer");
-        await animateSteps(300);
-        changeTurn("player");
+        await computerAutomation();
         stepsCount = 1;
         stepsCountEl.innerText = "" + stepsCount;
-        await wait(500);
         return 0;
       }
-      console.log("steps");
+
       generateStep();
-      changeTurn("computer");
-      await animateSteps(300);
-      changeTurn("player");
+      await computerAutomation();
       curStepsCount = 0;
       curStepsCountEl.innerText = "" + curStepsCount;
       stepsCount = steps.length;
       stepsCountEl.innerText = "" + stepsCount;
     }
   } else {
-    changeTurn("computer");
-    await animateSteps(300);
-    changeTurn("player");
+    curStepsCount = 0;
+    curStepsCountEl.innerText = "" + curStepsCount;
+    await computerAutomation();
   }
+}
+
+async function computerAutomation() {
+  changeTurn("computer");
+  await animateSteps(300);
+  changeTurn("player");
 }
 
 async function Game() {
   initializeGame();
   generateStep();
-  await animateSteps(300);
-  changeTurn("player");
+  updateCounters();
+  await computerAutomation();
 }
 
+/* - start game -  */
 Game();
+
+// class Animation {}
+// class Tools {}
+// class Game {}
