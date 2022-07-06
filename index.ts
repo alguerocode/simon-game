@@ -31,7 +31,7 @@ const stepsController: { stepsArr: number[] } | any = {
 
 const stageController = {
   curStageCount: 0,
-  allStageCount: Game.level * 2, // -> stage count extract from the double level counts
+  allStageCount: 1, // -> stage count extract from the double level counts
   curStageCountEl: document.querySelector<HTMLParagraphElement>(".current-stage-count")!,
   allStageCountEl: document.querySelector<HTMLParagraphElement>(".all-stage-count")!,
 
@@ -53,9 +53,9 @@ class GameAnimation {
   static async animateSteps(transitionTime: number) {
     for (const stepId of stepsController.stepsArr) {
       const button = document.getElementById(`${stepId}`);
-      await this.wait(transitionTime);
+      await GameAnimation.wait(transitionTime);
       button?.classList.add("clicked");
-      await this.wait(transitionTime);
+      await GameAnimation.wait(transitionTime);
       button?.classList.remove("clicked");
     }
   }
@@ -67,7 +67,7 @@ class GameAnimation {
 
   static async computerAutomation() {
     Controller.changeTurn("computer");
-    await this.animateSteps(300);
+    await GameAnimation.animateSteps(300);
     Controller.changeTurn("player");
   }
   static async wrongClickAnimation() {}
@@ -102,7 +102,7 @@ class Controller {
           if (Game.level >= 10) document.body.innerHTML = "";
 
           levelNumberEl.innerText = "" + Game.level;
-          const newButton = this.createButtonEl(Game.colors[Game.level], "" + Game.level);
+          const newButton = Controller.createButtonEl(Game.colors[Game.level], "" + Game.level);
           buttonsContainer.append(newButton);
 
           // update stages
@@ -120,7 +120,6 @@ class Controller {
           return;
         }
 
-        
         Controller.generateStep();
         stepsController.setCurStepsCount = 0;
         stepsController.setAllStepsCount = stepsController.stepsArr.length;
@@ -136,12 +135,22 @@ class Controller {
     const button = document.createElement("label");
     button.classList.add("game-btn");
     button.style.backgroundColor = color;
+    button.style.backgroundImage = `linear-gradient(to top, ${color}, rgb(130, 130, 130))`;
     button.id = id;
+    
+    const frontground = document.createElement("label");
+    frontground.style.backgroundColor = color;
+    frontground.style.fontSize = "4rem";
+    frontground.id = id;
+    frontground.classList.add("front");
+    frontground.innerText = color[0].toUpperCase();
+    frontground.htmlFor = id;
+    button.append(frontground);
 
     button.addEventListener("click", (event: any) => {
       if (Game.curTurn == "computer") return;
       const id = +event.target.id;
-      this.gameLogic(id);
+      Controller.gameLogic(id);
     });
 
     return button;
@@ -149,24 +158,25 @@ class Controller {
 }
 
 class Game {
-  static level: number = 0;
+  static level: number = 1;
   static curTurn: "computer" | "player" = "computer";
-  static colors: string[] = ["red", "blue", "black"];
+  static colors: string[] = ["", "red", "blue", "black"];
 
   static extractLevel() {} // it will extreact level from local storage
   static initializeGame(): void {
     // create all buttons
+    stageController.setAllStageCount = Game.level * 2;
     const gameButtons: HTMLLabelElement[] = [];
-    for (let i = 1; i <= this.level; i++) {
-      gameButtons.push(Controller.createButtonEl(this.colors[i], "" + i));
+    for (let i = 1; i <= Game.level; i++) {
+      gameButtons.push(Controller.createButtonEl(Game.colors[i], "" + i ));
     }
 
-    curTurnEl.innerText = this.curTurn;
+    curTurnEl.innerText = Game.curTurn;
     buttonsContainer.append(...gameButtons);
   }
 
   static updateCounters() {
-    levelNumberEl.innerText = "" + this.level;
+    levelNumberEl.innerText = "" + Game.level;
     stepsController.setCurStepsCount = stepsController.curStepsCount;
     stepsController.setAllStepsCount = stepsController.allStepsCount;
     stageController.setCurStageCount = stageController.curStageCount;
@@ -174,127 +184,11 @@ class Game {
   }
 
   static async start() {
-    this.initializeGame();
+    Game.initializeGame();
     Controller.generateStep();
-    this.updateCounters();
+    Game.updateCounters();
     await GameAnimation.computerAutomation();
   }
 }
 
 Game.start();
-
-// function createButtonEl(color: string, id: string): HTMLLabelElement {
-//   const button = document.createElement("label");
-//   button.classList.add("game-btn");
-//   button.style.backgroundColor = color;
-//   button.id = id;
-
-//   button.addEventListener("click", (event: any) => {
-//     if (curTurn == "computer") return;
-//     const id = +event.target.id;
-//     gameLogic(id);
-//   });
-
-//   return button;
-// }
-
-// function initializeGame(): void {
-//   // create all buttons
-//   const gameButtons: HTMLLabelElement[] = [];
-//   for (let i = 1; i <= level; i++) {
-//     gameButtons.push(createButtonEl(colors[i], "" + i));
-//   }
-
-//   curTurnEl.innerText = curTurn;
-//   buttonsContainer.append(...gameButtons);
-// }
-
-// function updateCounters() {
-//   levelNumberEl.innerText = "" + level;
-//   stepsController.setCurStepsCount = stepsController.curStepsCount;
-//   stepsController.setAllStepsCount = stepsController.allStepsCount;
-//   stageController.setCurStageCount = stageController.curStageCount;
-//   stageController.setAllStageCount = stageController.allStageCount;
-// }
-
-// function wait(time: number): Promise<null> {
-//   return new Promise((resolve) => {
-//     setTimeout(resolve, time);
-//   });
-// }
-
-// async function animateSteps(transitionTime: number) {
-//   for (const stepId of stepsController.stepsArr) {
-//     const button = document.getElementById(`${stepId}`);
-//     await wait(transitionTime);
-//     button?.classList.add("clicked");
-//     await wait(transitionTime);
-//     button?.classList.remove("clicked");
-//   }
-// }
-
-// function generateStep(): void {
-//   const randomId = Math.ceil(Math.random() * level);
-//   stepsController.stepsArr.push(randomId);
-// }
-
-// function changeTurn(turn: typeof curTurn) {
-//   curTurn = turn;
-//   curTurnEl.innerText = turn;
-
-//   // allow player to click with animation
-//   curTurn === "computer"
-//     ? buttonsContainer.classList.remove("player-active")
-//     : buttonsContainer.classList.add("player-active");
-// }
-
-// function wrongClickAnimation() {}
-
-// // game logic
-// async function gameLogic(id: number) {
-//   if (stepsController.stepsArr[stepsController.curStepsCount] === id) {
-//     stepsController.setCurStepsCount = stepsController.curStepsCount + 1;
-
-//     if (stepsController.curStepsCount >= stepsController.allStepsCount) {
-//       stageController.setCurStageCount = stageController.curStageCount + 1;
-
-//       if (stageController.curStageCount >= stageController.allStageCount) {
-//         // if level == 10 ( case win )
-//         level++;
-//         if (level >= 10) document.body.innerHTML = "";
-
-//         levelNumberEl.innerText = "" + level;
-//         const newButton = createButtonEl(colors[level], "" + level);
-//         buttonsContainer.append(newButton);
-
-//         // update stages
-//         stageController.setCurStageCount = 0;
-//         stageController.setAllStageCount = level * 2;
-
-//         // update steps
-//         stepsController.setCurStepsCount = 0;
-//         stepsController.stepsArr = [];
-//         stepsController.setAllStepsCount = 1;
-
-//         generateStep();
-//         await computerAutomation();
-
-//         return;
-//       }
-
-//       generateStep();
-//       stepsController.setCurStepsCount = 0;
-//       stepsController.setAllStepsCount = stepsController.stepsArr.length;
-//       await computerAutomation();
-//     }
-//   } else {
-//     stepsController.setCurStepsCount = 0;
-//     await computerAutomation();
-//   }
-// }
-
-// async function computerAutomation() {
-//   changeTurn("computer");
-//   await animateSteps(300);
-//   changeTurn("player");
-// }

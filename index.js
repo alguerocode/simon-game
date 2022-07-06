@@ -60,7 +60,7 @@ var stepsController = {
 };
 var stageController = {
     curStageCount: 0,
-    allStageCount: Game.level * 2,
+    allStageCount: 1,
     curStageCountEl: document.querySelector(".current-stage-count"),
     allStageCountEl: document.querySelector(".all-stage-count"),
     set setCurStageCount(value) {
@@ -89,11 +89,11 @@ var GameAnimation = /** @class */ (function () {
                         if (!(_i < _a.length)) return [3 /*break*/, 5];
                         stepId = _a[_i];
                         button = document.getElementById("".concat(stepId));
-                        return [4 /*yield*/, this.wait(transitionTime)];
+                        return [4 /*yield*/, GameAnimation.wait(transitionTime)];
                     case 2:
                         _b.sent();
                         button === null || button === void 0 ? void 0 : button.classList.add("clicked");
-                        return [4 /*yield*/, this.wait(transitionTime)];
+                        return [4 /*yield*/, GameAnimation.wait(transitionTime)];
                     case 3:
                         _b.sent();
                         button === null || button === void 0 ? void 0 : button.classList.remove("clicked");
@@ -117,7 +117,7 @@ var GameAnimation = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         Controller.changeTurn("computer");
-                        return [4 /*yield*/, this.animateSteps(300)];
+                        return [4 /*yield*/, GameAnimation.animateSteps(300)];
                     case 1:
                         _a.sent();
                         Controller.changeTurn("player");
@@ -164,7 +164,7 @@ var Controller = /** @class */ (function () {
                         if (Game.level >= 10)
                             document.body.innerHTML = "";
                         levelNumberEl.innerText = "" + Game.level;
-                        newButton = this.createButtonEl(Game.colors[Game.level], "" + Game.level);
+                        newButton = Controller.createButtonEl(Game.colors[Game.level], "" + Game.level);
                         buttonsContainer.append(newButton);
                         // update stages
                         stageController.setCurStageCount = 0;
@@ -199,16 +199,24 @@ var Controller = /** @class */ (function () {
         });
     };
     Controller.createButtonEl = function (color, id) {
-        var _this = this;
         var button = document.createElement("label");
         button.classList.add("game-btn");
         button.style.backgroundColor = color;
+        button.style.backgroundImage = "linear-gradient(to top, ".concat(color, ", rgb(130, 130, 130))");
         button.id = id;
+        var frontground = document.createElement("label");
+        frontground.style.backgroundColor = color;
+        frontground.style.fontSize = "4rem";
+        frontground.id = id;
+        frontground.classList.add("front");
+        frontground.innerText = color[0].toUpperCase();
+        frontground.htmlFor = id;
+        button.append(frontground);
         button.addEventListener("click", function (event) {
             if (Game.curTurn == "computer")
                 return;
             var id = +event.target.id;
-            _this.gameLogic(id);
+            Controller.gameLogic(id);
         });
         return button;
     };
@@ -220,15 +228,16 @@ var Game = /** @class */ (function () {
     Game.extractLevel = function () { }; // it will extreact level from local storage
     Game.initializeGame = function () {
         // create all buttons
+        stageController.setAllStageCount = Game.level * 2;
         var gameButtons = [];
-        for (var i = 1; i <= this.level; i++) {
-            gameButtons.push(Controller.createButtonEl(this.colors[i], "" + i));
+        for (var i = 1; i <= Game.level; i++) {
+            gameButtons.push(Controller.createButtonEl(Game.colors[i], "" + i));
         }
-        curTurnEl.innerText = this.curTurn;
+        curTurnEl.innerText = Game.curTurn;
         buttonsContainer.append.apply(buttonsContainer, gameButtons);
     };
     Game.updateCounters = function () {
-        levelNumberEl.innerText = "" + this.level;
+        levelNumberEl.innerText = "" + Game.level;
         stepsController.setCurStepsCount = stepsController.curStepsCount;
         stepsController.setAllStepsCount = stepsController.allStepsCount;
         stageController.setCurStageCount = stageController.curStageCount;
@@ -239,9 +248,9 @@ var Game = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this.initializeGame();
+                        Game.initializeGame();
                         Controller.generateStep();
-                        this.updateCounters();
+                        Game.updateCounters();
                         return [4 /*yield*/, GameAnimation.computerAutomation()];
                     case 1:
                         _a.sent();
@@ -250,103 +259,9 @@ var Game = /** @class */ (function () {
             });
         });
     };
-    Game.level = 0;
+    Game.level = 1;
     Game.curTurn = "computer";
-    Game.colors = ["red", "blue", "black"];
+    Game.colors = ["", "red", "blue", "black"];
     return Game;
 }());
 Game.start();
-// function createButtonEl(color: string, id: string): HTMLLabelElement {
-//   const button = document.createElement("label");
-//   button.classList.add("game-btn");
-//   button.style.backgroundColor = color;
-//   button.id = id;
-//   button.addEventListener("click", (event: any) => {
-//     if (curTurn == "computer") return;
-//     const id = +event.target.id;
-//     gameLogic(id);
-//   });
-//   return button;
-// }
-// function initializeGame(): void {
-//   // create all buttons
-//   const gameButtons: HTMLLabelElement[] = [];
-//   for (let i = 1; i <= level; i++) {
-//     gameButtons.push(createButtonEl(colors[i], "" + i));
-//   }
-//   curTurnEl.innerText = curTurn;
-//   buttonsContainer.append(...gameButtons);
-// }
-// function updateCounters() {
-//   levelNumberEl.innerText = "" + level;
-//   stepsController.setCurStepsCount = stepsController.curStepsCount;
-//   stepsController.setAllStepsCount = stepsController.allStepsCount;
-//   stageController.setCurStageCount = stageController.curStageCount;
-//   stageController.setAllStageCount = stageController.allStageCount;
-// }
-// function wait(time: number): Promise<null> {
-//   return new Promise((resolve) => {
-//     setTimeout(resolve, time);
-//   });
-// }
-// async function animateSteps(transitionTime: number) {
-//   for (const stepId of stepsController.stepsArr) {
-//     const button = document.getElementById(`${stepId}`);
-//     await wait(transitionTime);
-//     button?.classList.add("clicked");
-//     await wait(transitionTime);
-//     button?.classList.remove("clicked");
-//   }
-// }
-// function generateStep(): void {
-//   const randomId = Math.ceil(Math.random() * level);
-//   stepsController.stepsArr.push(randomId);
-// }
-// function changeTurn(turn: typeof curTurn) {
-//   curTurn = turn;
-//   curTurnEl.innerText = turn;
-//   // allow player to click with animation
-//   curTurn === "computer"
-//     ? buttonsContainer.classList.remove("player-active")
-//     : buttonsContainer.classList.add("player-active");
-// }
-// function wrongClickAnimation() {}
-// // game logic
-// async function gameLogic(id: number) {
-//   if (stepsController.stepsArr[stepsController.curStepsCount] === id) {
-//     stepsController.setCurStepsCount = stepsController.curStepsCount + 1;
-//     if (stepsController.curStepsCount >= stepsController.allStepsCount) {
-//       stageController.setCurStageCount = stageController.curStageCount + 1;
-//       if (stageController.curStageCount >= stageController.allStageCount) {
-//         // if level == 10 ( case win )
-//         level++;
-//         if (level >= 10) document.body.innerHTML = "";
-//         levelNumberEl.innerText = "" + level;
-//         const newButton = createButtonEl(colors[level], "" + level);
-//         buttonsContainer.append(newButton);
-//         // update stages
-//         stageController.setCurStageCount = 0;
-//         stageController.setAllStageCount = level * 2;
-//         // update steps
-//         stepsController.setCurStepsCount = 0;
-//         stepsController.stepsArr = [];
-//         stepsController.setAllStepsCount = 1;
-//         generateStep();
-//         await computerAutomation();
-//         return;
-//       }
-//       generateStep();
-//       stepsController.setCurStepsCount = 0;
-//       stepsController.setAllStepsCount = stepsController.stepsArr.length;
-//       await computerAutomation();
-//     }
-//   } else {
-//     stepsController.setCurStepsCount = 0;
-//     await computerAutomation();
-//   }
-// }
-// async function computerAutomation() {
-//   changeTurn("computer");
-//   await animateSteps(300);
-//   changeTurn("player");
-// }
