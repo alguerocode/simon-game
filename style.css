@@ -214,15 +214,28 @@ main {
   max-width: 450px;
 }
 
+.right {
+  position:absolute;
+  bottom: 15px;
+  margin: auto;
+  font-size: 1.5rem;
+  color: darkgray;
+}
+
 @media screen and (max-width: 600px) {
   .buttons-container .game-btn .front {
     background-size: 3rem 3rem;
     transform: translateY(-15px);
   }
 
+  #game {
+    margin-top: 40px;
+    margin-bottom: 40px;
+  }
   .buttons-container .game-btn {
     width: 60px;
     height: 45px;
+    margin: 10px;
   }
 
   .front {

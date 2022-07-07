@@ -1,5 +1,5 @@
 // audio
-// pwa 
+// pwa
 // deploy os and github pages
 /****************** global variables ***********/
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -64,6 +64,14 @@ var stepsController = {
         this.allStepsCount = value;
         this.stepsSpan.innerText = "steps (".concat(this.curStepsCount, "/").concat(this.allStepsCount, ")");
     }
+};
+var sounds = {
+    stage: new Howl({
+        src: "./sound/stage.wav"
+    }),
+    level: new Howl({
+        src: "./sound/level.wav"
+    })
 };
 var stageController = {
     curStageCount: 0,
@@ -198,6 +206,7 @@ var Controller = /** @class */ (function () {
                         if (!(stageController.curStageCount >= stageController.allStageCount)) return [3 /*break*/, 3];
                         // if level == 10 ( case win )
                         Game.level++;
+                        sounds.level.play();
                         if (Game.level >= 11) {
                             Game.win();
                             return [2 /*return*/];
@@ -222,6 +231,7 @@ var Controller = /** @class */ (function () {
                         _a.sent();
                         return [2 /*return*/];
                     case 3:
+                        sounds.stage.play();
                         Controller.generateStep();
                         return [4 /*yield*/, GameAnimation.wait(500)];
                     case 4:
@@ -233,13 +243,13 @@ var Controller = /** @class */ (function () {
                         _a.sent();
                         _a.label = 6;
                     case 6: return [3 /*break*/, 11];
-                    case 7: return [4 /*yield*/, GameAnimation.wait(500)];
+                    case 7: return [4 /*yield*/, GameAnimation.wrongClickAnimation()];
                     case 8:
                         _a.sent();
-                        stepsController.setCurStepsCount = 0;
-                        return [4 /*yield*/, GameAnimation.wrongClickAnimation()];
+                        return [4 /*yield*/, GameAnimation.wait(500)];
                     case 9:
                         _a.sent();
+                        stepsController.setCurStepsCount = 0;
                         return [4 /*yield*/, GameAnimation.computerAutomation()];
                     case 10:
                         _a.sent();

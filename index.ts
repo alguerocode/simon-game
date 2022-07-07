@@ -1,6 +1,5 @@
-
 // audio
-// pwa 
+// pwa
 // deploy os and github pages
 /****************** global variables ***********/
 
@@ -24,15 +23,25 @@ const stepsController: { stepsArr: number[] } | any = {
 
   set setCurStepsCount(value: number) {
     this.curStepsCount = value;
-    this.stepsProgressEl.style.width = `${(this.curStepsCount / this.allStepsCount) * 100}%`
+    this.stepsProgressEl.style.width = `${(this.curStepsCount / this.allStepsCount) * 100}%`;
     this.stepsSpan.innerText = `steps (${this.curStepsCount}/${this.allStepsCount})`;
   },
 
   set setAllStepsCount(value: number) {
     this.allStepsCount = value;
     this.stepsSpan.innerText = `steps (${this.curStepsCount}/${this.allStepsCount})`;
-
   },
+};
+/************** sounds ****************/
+
+declare const Howl: any;
+const sounds = {
+  stage: new Howl({
+    src: "./sound/stage.wav",
+  }),
+  level: new Howl({
+    src: "./sound/level.wav",
+  }),
 };
 
 const stageController = {
@@ -44,7 +53,7 @@ const stageController = {
   set setCurStageCount(value: number) {
     this.curStageCount = value;
     this.stageSpan.innerText = `stages (${this.curStageCount}/${this.allStageCount})`;
-    this.stageProgressEl.style.width = `${(this.curStageCount / this.allStageCount) * 100}%`
+    this.stageProgressEl.style.width = `${(this.curStageCount / this.allStageCount) * 100}%`;
   },
 
   set setAllStageCount(value: number) {
@@ -119,6 +128,7 @@ class Controller {
         if (stageController.curStageCount >= stageController.allStageCount) {
           // if level == 10 ( case win )
           Game.level++;
+          sounds.level.play();
           if (Game.level >= 11) {
             Game.win();
             return;
@@ -146,6 +156,7 @@ class Controller {
           return;
         }
 
+        sounds.stage.play();
         Controller.generateStep();
         await GameAnimation.wait(500);
         stepsController.setCurStepsCount = 0;
@@ -153,9 +164,9 @@ class Controller {
         await GameAnimation.computerAutomation();
       }
     } else {
+      await GameAnimation.wrongClickAnimation();
       await GameAnimation.wait(500);
       stepsController.setCurStepsCount = 0;
-      await GameAnimation.wrongClickAnimation();
       await GameAnimation.computerAutomation();
     }
   }
@@ -273,20 +284,18 @@ if (window.localStorage.getItem("level")) {
   }
 }
 
-
 startGameBTN.addEventListener("click", async () => {
   Board.style.display = "block";
   gameTable.style.display = "block";
   winMessageEl.style.display = "none";
   startGameBTN.style.display = "none";
-  if(Game.level >= 11) {
+  if (Game.level >= 11) {
     Game.level = 1;
     window.localStorage.setItem("level", "" + Game.level);
   }
   Game.extractLevelAndSet();
   Game.start();
 });
-
 
 // next and prev
 nextButton.addEventListener("click", (event) => {
