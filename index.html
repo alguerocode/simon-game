@@ -1,80 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-   <meta charset="UTF-8">
-   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
-      integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="manifest" href="manifest.json" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
-      crossorigin="anonymous"></script>
-   <script src="https://cdn.jsdelivr.net/npm/howler@2.2.3/dist/howler.min.js"></script>
-   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
-   <link rel="stylesheet" href="https://unpkg.com/keyboard-css@1.2.4/dist/css/main.min.css" />
-   
-   <link rel="icon" type="image/x-icon" href="/public/favicon.png">
-   <link rel="stylesheet" href="./style.css">
-   <script src="./index.js" defer></script>
-   <title>Simon Game</title>
-</head>
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/howler@2.2.3/dist/howler.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="https://unpkg.com/keyboard-css@1.2.4/dist/css/main.min.css" />
+    <link rel="apple-touch-icon" href="img/favicon.png" />
+    <meta name="apple-mobile-web-app-status-bar" content="#ffffff" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" type="image/x-icon" href="/img/favicon.png" />
+    <link rel="stylesheet" href="./style.css" />
+    <script src="./index.js" defer></script>
+    <title>Simon Game</title>
+  </head>
 
-<body>
-   <a href="https://github.com/alguerocode/simon-game" class="github-link">
+  <body>
+    <a href="https://github.com/alguerocode/simon-game" class="github-link">
       <img src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white" />
-   </a>
-   <header>
+    </a>
+    <header>
       <h1>Simon Game</h1>
-   </header>
-   <div id="win">
+    </header>
+    <div id="win">
       <h3>Congratulation, You Win🎉🎉</h3>
       <p>pls don't forget to leave a star on github repository.</p>
-   </div>
-   <label id="start-game">
+    </div>
+    <label id="start-game">
       <label htmlFor="start-game"> Start Game</label>
-   </label>
+    </label>
 
-   <div id="board">
+    <div id="board">
       <div id="level">
-         <button id="prev" class="kbc-button">prev</button>
-         <button class="kbc-button kbc-button-light level-container  kbc-button-lg">
-            <p>LEVEL </p>
-            <p id="level-number">1</p>
-         </button>
-         <button id="next" class="kbc-button">next </button>
+        <button id="prev" class="kbc-button">prev</button>
+        <button class="kbc-button kbc-button-light level-container kbc-button-lg">
+          <p>LEVEL</p>
+          <p id="level-number">1</p>
+        </button>
+        <button id="next" class="kbc-button">next</button>
       </div>
       <div class="stage">
-         <div class="progress">
-            <div class="progress-bar bg-info" role="progressbar" style="width: 0%"></div>
-            <span></span>
-         </div>
+        <div class="progress">
+          <div class="progress-bar bg-info" role="progressbar" style="width: 0%"></div>
+          <span></span>
+        </div>
       </div>
       <div class="steps">
-         
-         <div class="progress">
-            <div class="progress-bar bg-success" role="progressbar" style="width: 50%"></div>
-            <span></span>
-         </div>
+        <div class="progress">
+          <div class="progress-bar bg-success" role="progressbar" style="width: 50%"></div>
+          <span></span>
+        </div>
       </div>
       <div class="turn">
-         <p class="text">Now The Turn for</p>
-         <p class="current-turn"></p>
+        <p class="current-turn"></p>
       </div>
-   </div>
-   <main id="game">
+    </div>
+    <main id="game">
       <div class="buttons-container"></div>
-   </main>
-   <div id="tutorial">
-
+    </main>
+    <div id="tutorial">
       <h2>What is this Game</h2>
       <p>
-         this is the improved version of Simon game using JavaScript and Html.
-         you have 10 level to complete until you finish the game, every level stages,
-         and every stages some amout of steps you should follow, you can figure it out by following computer animation
+        this is the improved version of Simon game using JavaScript and Html. you have 10 level to complete until you
+        finish the game, every level stages, and every stages some amout of steps you should follow, you can figure it
+        out by following computer animation
       </p>
-   </div>
-   <p class="right">&copy; 2021 salah alhashmi</p>
-</body>
-
+    </div>
+    <p class="right">&copy; 2021 salah alhashmi</p>
+  </body>
+  <noscript>You should enable JavaScript in your browser to open this Game</noscript>
 </html>

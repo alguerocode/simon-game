@@ -172,10 +172,6 @@ main {
   margin-top: 5px;
 }
 
-.turn .text {
-  border: 3px solid black;
-  padding: 3px;
-}
 .current-turn {
   background-color: black;
   color: white;

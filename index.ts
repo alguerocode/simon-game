@@ -1,6 +1,3 @@
-// audio
-// pwa
-// deploy os and github pages
 /****************** global variables ***********/
 
 const prevButton: HTMLButtonElement = document.querySelector("#prev")!;
@@ -32,17 +29,6 @@ const stepsController: { stepsArr: number[] } | any = {
     this.stepsSpan.innerText = `steps (${this.curStepsCount}/${this.allStepsCount})`;
   },
 };
-/************** sounds ****************/
-
-declare const Howl: any;
-const sounds = {
-  stage: new Howl({
-    src: "./sound/stage.wav",
-  }),
-  level: new Howl({
-    src: "./sound/level.wav",
-  }),
-};
 
 const stageController = {
   curStageCount: 0,
@@ -62,8 +48,49 @@ const stageController = {
   },
 };
 
-// initialize game
-// fetch the level and the scores from local storage
+/************** sounds ****************/
+declare const Howl: any;
+const sounds = {
+  stage: new Howl({
+    src: "/sound/stage.wav",
+  }),
+  level: new Howl({
+    src: "/sound/level.wav",
+  }),
+  lose: new Howl({
+    src: "/sound/lose.wav",
+  }),
+  black: new Howl({
+    src: "/sound/black.wav",
+  }),
+  yellow: new Howl({
+    src: "/sound/yellow.wav",
+  }),
+  red: new Howl({
+    src: "/sound/red.wav",
+  }),
+  aqua: new Howl({
+    src: "/sound/aqua.wav",
+  }),
+  purple: new Howl({
+    src: "/sound/purple.wav",
+  }),
+  forestgreen: new Howl({
+    src: "/sound/forestgreen.wav",
+  }),
+  orange: new Howl({
+    src: "/sound/orange.wav",
+  }),
+  mediumslateblue: new Howl({
+    src: "/sound/mediumslateblue.wav",
+  }),
+  coral: new Howl({
+    src: "/sound/coral.wav",
+  }),
+  blue: new Howl({
+    src: "/sound/blue.wav",
+  }),
+};
 
 class GameAnimation {
   static async animateSteps(transitionTime: number) {
@@ -71,6 +98,7 @@ class GameAnimation {
       const button = document.getElementById(`${stepId}`);
       await GameAnimation.wait(transitionTime);
       button?.classList.add("clicked");
+      Controller.playCurrentBTNSound(stepId);
       await GameAnimation.wait(transitionTime);
       button?.classList.remove("clicked");
     }
@@ -104,6 +132,10 @@ class Controller {
     stepsController.stepsArr.push(randomId);
   }
 
+  static playCurrentBTNSound(id:number) {
+    const soundName: string = Game.colors[id];
+    sounds[soundName].play();
+  }
   static disableNextAndPrevBTNs(disable: boolean) {
     nextButton.disabled = disable;
     prevButton.disabled = disable;
@@ -120,6 +152,7 @@ class Controller {
 
   static async gameLogic(id: number) {
     if (stepsController.stepsArr[stepsController.curStepsCount] === id) {
+      Controller.playCurrentBTNSound(id);
       stepsController.setCurStepsCount = stepsController.curStepsCount + 1;
 
       if (stepsController.curStepsCount >= stepsController.allStepsCount) {
@@ -164,6 +197,7 @@ class Controller {
         await GameAnimation.computerAutomation();
       }
     } else {
+      sounds.lose.play();
       await GameAnimation.wrongClickAnimation();
       await GameAnimation.wait(500);
       stepsController.setCurStepsCount = 0;
@@ -313,3 +347,14 @@ prevButton.addEventListener("click", (event) => {
     Game.start(); // restart the game
   }
 });
+
+/************** pwa support *********************/
+
+if("serviceWorker" in window.navigator) {
+  window.addEventListener("load", function() {
+    navigator.serviceWorker
+      .register("/service-worker.js")
+      .then(res => console.log("service worker registered"))
+      .catch(err => console.log("service worker not registered", err))
+  })
+}

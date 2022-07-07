@@ -1,0 +1,12 @@
+{
+    "name": "Simon Game",
+    "short_name": "SimonGame",
+    "start_url": "index.html",
+    "display": "standalone",
+    "background_color":"#ffffff",
+    "theme_color":"#ffffff",
+    "orientation": "portrait-primary",
+    "icons": [
+
+    ]
+  }

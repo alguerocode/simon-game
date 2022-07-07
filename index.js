@@ -1,6 +1,3 @@
-// audio
-// pwa
-// deploy os and github pages
 /****************** global variables ***********/
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -65,14 +62,6 @@ var stepsController = {
         this.stepsSpan.innerText = "steps (".concat(this.curStepsCount, "/").concat(this.allStepsCount, ")");
     }
 };
-var sounds = {
-    stage: new Howl({
-        src: "./sound/stage.wav"
-    }),
-    level: new Howl({
-        src: "./sound/level.wav"
-    })
-};
 var stageController = {
     curStageCount: 0,
     allStageCount: 1,
@@ -88,8 +77,47 @@ var stageController = {
         this.stageSpan.innerText = "stages (".concat(this.curStageCount, "/").concat(this.allStageCount, ")");
     }
 };
-// initialize game
-// fetch the level and the scores from local storage
+var sounds = {
+    stage: new Howl({
+        src: "/sound/stage.wav"
+    }),
+    level: new Howl({
+        src: "/sound/level.wav"
+    }),
+    lose: new Howl({
+        src: "/sound/lose.wav"
+    }),
+    black: new Howl({
+        src: "/sound/black.wav"
+    }),
+    yellow: new Howl({
+        src: "/sound/yellow.wav"
+    }),
+    red: new Howl({
+        src: "/sound/red.wav"
+    }),
+    aqua: new Howl({
+        src: "/sound/aqua.wav"
+    }),
+    purple: new Howl({
+        src: "/sound/purple.wav"
+    }),
+    forestgreen: new Howl({
+        src: "/sound/forestgreen.wav"
+    }),
+    orange: new Howl({
+        src: "/sound/orange.wav"
+    }),
+    mediumslateblue: new Howl({
+        src: "/sound/mediumslateblue.wav"
+    }),
+    coral: new Howl({
+        src: "/sound/coral.wav"
+    }),
+    blue: new Howl({
+        src: "/sound/blue.wav"
+    })
+};
 var GameAnimation = /** @class */ (function () {
     function GameAnimation() {
     }
@@ -109,6 +137,7 @@ var GameAnimation = /** @class */ (function () {
                     case 2:
                         _b.sent();
                         button === null || button === void 0 ? void 0 : button.classList.add("clicked");
+                        Controller.playCurrentBTNSound(stepId);
                         return [4 /*yield*/, GameAnimation.wait(transitionTime)];
                     case 3:
                         _b.sent();
@@ -181,6 +210,10 @@ var Controller = /** @class */ (function () {
         var randomId = Math.ceil(Math.random() * Game.level);
         stepsController.stepsArr.push(randomId);
     };
+    Controller.playCurrentBTNSound = function (id) {
+        var soundName = Game.colors[id];
+        sounds[soundName].play();
+    };
     Controller.disableNextAndPrevBTNs = function (disable) {
         nextButton.disabled = disable;
         prevButton.disabled = disable;
@@ -200,6 +233,7 @@ var Controller = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         if (!(stepsController.stepsArr[stepsController.curStepsCount] === id)) return [3 /*break*/, 7];
+                        Controller.playCurrentBTNSound(id);
                         stepsController.setCurStepsCount = stepsController.curStepsCount + 1;
                         if (!(stepsController.curStepsCount >= stepsController.allStepsCount)) return [3 /*break*/, 6];
                         stageController.setCurStageCount = stageController.curStageCount + 1;
@@ -243,7 +277,9 @@ var Controller = /** @class */ (function () {
                         _a.sent();
                         _a.label = 6;
                     case 6: return [3 /*break*/, 11];
-                    case 7: return [4 /*yield*/, GameAnimation.wrongClickAnimation()];
+                    case 7:
+                        sounds.lose.play();
+                        return [4 /*yield*/, GameAnimation.wrongClickAnimation()];
                     case 8:
                         _a.sent();
                         return [4 /*yield*/, GameAnimation.wait(500)];
@@ -418,3 +454,11 @@ prevButton.addEventListener("click", function (event) {
         Game.start(); // restart the game
     }
 });
+/************** pwa support *********************/
+if ("serviceWorker" in window.navigator) {
+    window.addEventListener("load", function () {
+        navigator.serviceWorker
+            .register("/service-worker.js")
+            .then(function (res) { return console.log("service worker registered"); })["catch"](function (err) { return console.log("service worker not registered", err); });
+    });
+}
