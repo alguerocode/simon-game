@@ -1,9 +1,13 @@
 @import url("https://fonts.googleapis.com/css2?family=Inconsolata:wght@500&family=Roboto:wght@300&display=swap");
 
 * {
-  font-family: "Inconsolata", monospace;
+  font-family: "Inconsolata", monospace !important;
+  box-sizing: content-box !important;
 }
 
+body {
+  line-height: normal !important;
+}
 .steps {
   display: flex;
 }
@@ -21,6 +25,10 @@
   cursor: pointer;
 }
 
+#win {
+  display: none;
+}
+
 #start-game label {
   content: "";
   background-color: white;
@@ -30,7 +38,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 175px;
+  width: 174px;
   font-size: 2rem;
   height: inherit;
   border-radius: inherit;
@@ -57,13 +65,31 @@ body {
   flex-direction: column;
 }
 
-#level {
+#board {
+  display: none;
+}
+
+#level-number {
+  margin-left: 5px;
+}
+
+.level-container {
   display: flex;
   flex-direction: row;
 }
+.level-container p {
+  margin: 0px;
+}
 
-#board {
-  display: none;
+#level {
+  height: 60px;
+  display: flex;
+  flex-direction: row;
+}
+.github-link {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 main {
@@ -77,6 +103,17 @@ main {
   justify-content: center;
   flex-wrap: wrap;
   min-width: 140px;
+}
+
+.buttons-container.wrong .game-btn {
+  background-color: red !important;
+  filter: brightness(1.5) !important;
+  background-image: linear-gradient(to top, red, rgb(130, 130, 130)) !important;
+}
+
+.buttons-container.wrong .game-btn .front {
+  background-color: red !important;
+  filter: brightness(1);
 }
 
 .buttons-container .game-btn {
@@ -128,19 +165,53 @@ main {
   transition-delay: initial;
 }
 
+.turn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 5px;
+}
+
+.turn .text {
+  border: 3px solid black;
+  padding: 3px;
+}
+.current-turn {
+  background-color: black;
+  color: white;
+  padding: 5px;
+  /* margin-left: 5px; */
+}
 .buttons-container > .game-btn .front {
   transition-delay: initial;
   cursor: pointer;
 }
 
-.test {
-  clear: left;
-  float: left;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  align-self: flex-start;
-  justify-self: flex-start;
+.progress {
+  height: 25px;
+  width: 100%;
+  border-radius: 0;
+  border: 3px solid black;
+  font-size: 1.2rem;
+  margin-top: 3px;
+  position: relative;
+}
+
+.progress-bar {
+  z-index: 1;
+}
+
+.progress span {
+  color: black;
+  position: absolute;
+  top: 0;
+  z-index: 2;
+  text-align: center;
+  width: 100%;
+}
+
+#tutorial p {
+  max-width: 450px;
 }
 
 @media screen and (max-width: 600px) {
