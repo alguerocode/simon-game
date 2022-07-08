@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc index.ts",
-    "start": "tsc index.ts --watch"
+    "build": "tsc index.ts --outFile index.bundle.js ",
+    "start": "tsc index.ts --outFile index.bundle.js --watch"
   },
   "repository": {
     "type": "git",

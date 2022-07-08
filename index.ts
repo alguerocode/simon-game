@@ -226,8 +226,6 @@ class Controller {
       Controller.disableNextAndPrevBTNs(true);
       await Controller.gameLogic(id);
       Controller.disableNextAndPrevBTNs(false);
-
-      console.log(stepsController.stepsArr);
     });
 
     return button;
