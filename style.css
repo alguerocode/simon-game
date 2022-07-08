@@ -160,7 +160,7 @@ main {
 }
 
 .buttons-container .clicked .front {
-  transform: translateY(-4px);
+  transform: translateY(-5px)!important;
   transition-duration: 125ms;
   transition-delay: initial;
 }
@@ -178,6 +178,7 @@ main {
   padding: 5px;
   /* margin-left: 5px; */
 }
+
 .buttons-container > .game-btn .front {
   transition-delay: initial;
   cursor: pointer;
