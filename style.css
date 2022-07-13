@@ -212,11 +212,10 @@ main {
 }
 
 .right {
-  display:none;
   position:absolute;
   bottom: 15px;
   margin: auto;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   color: darkgray;
 }
 
