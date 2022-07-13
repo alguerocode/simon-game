@@ -212,6 +212,7 @@ main {
 }
 
 .right {
+  display:none;
   position:absolute;
   bottom: 15px;
   margin: auto;
