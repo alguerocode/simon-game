@@ -10,7 +10,7 @@ This is the improved version of Simon game using JavaScript and Html. you have 1
 
 ## Build & Run
 install all npm dependencies
-```sh
+```sh 
 npm install
 ```
 for building the game
